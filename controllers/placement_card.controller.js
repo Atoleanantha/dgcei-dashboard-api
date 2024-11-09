@@ -13,14 +13,16 @@ const addPlacemant = asyncHandler(async(req,res)=>{
 
     const photoLoacalPath=req.files?.photo?.[0]?.path;
 
+    console.log("local file:",photoLoacalPath);
+    
     if(!photoLoacalPath){
         throw new ApiError(400,"Photo file is required")
     }
 
     const photo=await uploadOnCloudinary(photoLoacalPath);
-
+    console.log("cloud file:",photo)
     if(!photo){
-        throw new ApiError(400,"Photo file is required")
+        throw new ApiError(400,"Photo file is required  (add placement)")
     }
 
     const candidate= await PlacementCard.create({
@@ -32,7 +34,7 @@ const addPlacemant = asyncHandler(async(req,res)=>{
     });
 
     const createdCandidate=await PlacementCard.findById(candidate._id);
-    
+    console.log("mongo res:",createdCandidate)
     if(!createdCandidate){
         throw new ApiError(500,"Something went wrong while registring the user");
     }

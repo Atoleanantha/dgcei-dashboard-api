@@ -12,7 +12,8 @@ const addPopupImage =asyncHandler(async(req,res)=>{
     }
 
     const photo=await uploadOnCloudinary(photoLoacalPath);
-
+    console.log("photo:"+photo);
+    
     if(!photo){
         throw new ApiError(400,"Photo file is required")
     }
