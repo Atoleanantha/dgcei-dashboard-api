@@ -13,6 +13,7 @@ cloudinary.config({
 //     api_key: process.env.CLOUDINARY_API_KEY,
 // });
 const uploadOnCloudinary=async function (localFilePath) {
+    console.log("localpath:",localFilePath)
     try{
 
         if(!localFilePath) return null;
