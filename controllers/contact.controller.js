@@ -48,5 +48,22 @@ const getContacts = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, contacts, "Contacts retrieved successfully"));
 });
 
-export { addContact ,getContacts}
+
+const deleteContact = asyncHandler(async (req, res) => {
+    const { id } = req.params; // Extract the contact ID from request parameters
+
+    // Find the contact by ID and delete it
+    const contact = await ContactUs.findByIdAndDelete(id);
+
+    // If the contact is not found, throw an error
+    if (!contact) {
+        throw new ApiError(404, 'Contact not found');
+    }
+
+    // Return a success message with a 200 status
+    return res.status(200).json(new ApiResponse(200, null, "Contact deleted successfully"));
+});
+
+
+export { addContact ,getContacts,deleteContact}
 
