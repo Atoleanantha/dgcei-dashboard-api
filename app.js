@@ -21,8 +21,10 @@ import placementCardRouter from './routes/placement_card.route.js';
 import courseRouter from './routes/course.route.js';
 import popupRouter from './routes/popup_image.route.js';
 import gallaryRouter from './routes/gallary.route.js';
+import testimonialRouter from './routes/testimonial.route.js'
 
 app.use('/api/v1/contacts',contactRouter);
+app.use('/api/v1/testimonials',testimonialRouter);
 app.use('/api/v1/placements',placementCardRouter);
 app.use('/api/v1/courses',courseRouter);
 app.use('/api/v1/popups',popupRouter);
