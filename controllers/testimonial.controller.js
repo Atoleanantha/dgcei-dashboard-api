@@ -8,33 +8,39 @@ import { deleterCloudinaryFile, uploadOnCloudinary } from '../utils/cloudinary.j
 const addTestimonial = asyncHandler(async (req, res) => {
     const { name, comment, userType, rating } = req.body;
 
-    
     // Validate required fields
     if ([name, comment, userType].some((field) => !field?.trim())) {
-        throw new ApiError(400, "Name and comment fields are required!");
-    }
-    const rate=parseInt(rating)
-    const photoLoacalPath=req.files?.photo?.[0]?.path;
-
-    console.log("local file:",photoLoacalPath);
-    
-    if(!photoLoacalPath){
-        throw new ApiError(400,"Photo file is required")
+        throw new ApiError(400, "Name, comment, and userType fields are required!");
     }
 
-    const image=await uploadOnCloudinary(photoLoacalPath);
+    const rate = parseInt(rating); // Convert rating to integer
 
-    console.log("cloud file:",image)
-    if(!image){
-        throw new ApiError(400,"Photo file is required!")
+    // Optional photo handling
+    let photoLocalPath = req.files?.photo?.[0]?.path;
+    console.log("local file:", photoLocalPath);
+
+    // If no photo is uploaded, continue without photo
+    let imageUrl = null;
+    if (photoLocalPath) {
+        // Upload the image to Cloudinary if provided
+        const image = await uploadOnCloudinary(photoLocalPath);
+
+        console.log("cloud file:", image);
+
+        if (!image) {
+            throw new ApiError(400, "Failed to upload the photo file.");
+        }
+
+        imageUrl = image.url; // Save the Cloudinary URL
     }
 
+    // Create testimonial entry
     const testimonial = await Testimonial.create({
         name,
         comment,
-        image:image.url,
+        image: imageUrl || null,  // Use Cloudinary URL if photo exists, else null
         userType,
-        rating:rate,
+        rating: rate,
         isPublic: true,
     });
 
@@ -46,6 +52,7 @@ const addTestimonial = asyncHandler(async (req, res) => {
         new ApiResponse(201, testimonial, "Testimonial submitted successfully.")
     );
 });
+
 
 const getTestimonials = asyncHandler(async (req, res) => {
     const testimonials = await Testimonial.find();
